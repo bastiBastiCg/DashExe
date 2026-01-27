@@ -2,8 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply bg-background text-gray-800;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+}
 
-body {
-  @apply bg-background text-gray-800;
-  font-family: Inter, system-ui, sans-serif;
+/* ✅ sensación enterprise */
+* {
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
