@@ -26,40 +26,40 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-10">
-      <div className="w-[90%] max-w-md bg-white rounded-2xl shadow-sm border border-black/5 p-8 space-y-6">
-        <div className="flex flex-col items-center gap-4 text-center">
-          <div className="w-36">
+      <div className="w-[90%] max-w-md bg-white rounded-2xl shadow-sm border border-black/5 px-7 py-8 sm:px-8 sm:py-10 space-y-7">
+        <div className="flex flex-col items-center gap-5 text-center">
+          <div className="w-40 sm:w-44">
             <BrandLogo />
           </div>
-          <div>
+          <div className="space-y-1">
             <h1 className="text-2xl font-semibold text-primary">Área Comercial</h1>
-            <p className="text-sm text-muted mt-1">
+            <p className="text-sm text-muted">
               Acceso al sistema de dashboards comerciales
             </p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <label className="block text-sm">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <label className="block text-sm space-y-2">
             <span className="text-muted">Email</span>
             <input
               type="email"
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-2 w-full h-11 rounded-lg border border-black/10 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500"
+              className="w-full h-11 rounded-lg border border-black/10 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500"
               placeholder="correo@fiberpro.com"
             />
           </label>
 
-          <label className="block text-sm">
+          <label className="block text-sm space-y-2">
             <span className="text-muted">Contraseña</span>
             <input
               type="password"
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full h-11 rounded-lg border border-black/10 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500"
+              className="w-full h-11 rounded-lg border border-black/10 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500"
               placeholder="••••••••"
             />
           </label>
@@ -85,7 +85,7 @@ export default function Login() {
           </div>
         ) : null}
 
-        <div className="text-[11px] text-center text-muted pt-2">
+        <div className="text-[11px] text-center text-muted pt-1">
           © 2026 FiberPro. Todos los derechos reservados.
           <br />
           Designed by bastiBasti
