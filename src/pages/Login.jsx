@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
+import BrandLogo from "../components/BrandLogo";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -24,23 +25,30 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white rounded-xl shadow p-6 space-y-6 border border-black/5">
-        <div>
-          <h1 className="text-xl font-semibold text-primary">Acceso</h1>
-          <p className="text-sm text-muted">Ingresa con tu correo y contraseña.</p>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-10">
+      <div className="w-[90%] max-w-md bg-white rounded-2xl shadow-sm border border-black/5 p-8 space-y-6">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-36">
+            <BrandLogo />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold text-primary">Área Comercial</h1>
+            <p className="text-sm text-muted mt-1">
+              Acceso al sistema de dashboards comerciales
+            </p>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <label className="block text-sm">
-            <span className="text-muted">Correo</span>
+            <span className="text-muted">Email</span>
             <input
               type="email"
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-2 w-full h-10 rounded-lg border border-black/10 px-3 text-sm"
-              placeholder="correo@empresa.com"
+              className="mt-2 w-full h-11 rounded-lg border border-black/10 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500"
+              placeholder="correo@fiberpro.com"
             />
           </label>
 
@@ -51,29 +59,37 @@ export default function Login() {
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full h-10 rounded-lg border border-black/10 px-3 text-sm"
+              className="mt-2 w-full h-11 rounded-lg border border-black/10 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500"
               placeholder="••••••••"
             />
           </label>
 
           <button
             type="submit"
-            className="w-full h-10 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium"
+            className="w-full h-11 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition disabled:opacity-60"
             disabled={status.type === "loading"}
           >
-            {status.type === "loading" ? "Entrando..." : "Entrar"}
+            {status.type === "loading" ? "Ingresando..." : "Ingresar"}
           </button>
         </form>
 
         {status.message ? (
           <div
-            className={`text-xs ${
-              status.type === "error" ? "text-red-600" : "text-green-600"
+            className={`text-xs rounded-md px-3 py-2 border ${
+              status.type === "error"
+                ? "text-amber-700 bg-amber-50 border-amber-200"
+                : "text-emerald-600 bg-emerald-50 border-emerald-200"
             }`}
           >
             {status.message}
           </div>
         ) : null}
+
+        <div className="text-[11px] text-center text-muted pt-2">
+          © 2026 FiberPro. Todos los derechos reservados.
+          <br />
+          Designed by bastiBasti
+        </div>
       </div>
     </div>
   );
