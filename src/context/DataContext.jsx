@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useMemo } from "react";
+import { createContext, useContext, useState, useMemo, useCallback } from "react";
 
 const DataContext = createContext();
 
@@ -23,6 +23,17 @@ export function DataProvider({ children }) {
     grupo: "Todos",
     distrito: "Todos",
   });
+
+  const resetFilters = useCallback(() => {
+    setFilters({
+      servicio: "Todos",
+      fechaInicio: null,
+      fechaFin: null,
+      vendedor: "Todos",
+      grupo: "Todos",
+      distrito: "Todos",
+    });
+  }, []);
 
   const filteredData = useMemo(() => {
     const start = filters.fechaInicio ? parseDateYYYYMMDD(filters.fechaInicio) : null;
@@ -49,7 +60,16 @@ export function DataProvider({ children }) {
   }, [rawData, filters]);
 
   return (
-    <DataContext.Provider value={{ rawData, setRawData, filters, setFilters, filteredData }}>
+    <DataContext.Provider
+      value={{
+        rawData,
+        setRawData,
+        filters,
+        setFilters,
+        resetFilters,
+        filteredData,
+      }}
+    >
       {children}
     </DataContext.Provider>
   );

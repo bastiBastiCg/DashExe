@@ -3,7 +3,6 @@ import KPICard from "../components/KPICard";
 import VendorBar from "../components/charts/VendorBar";
 import DistrictDonut from "../components/charts/DistrictDonut";
 import SalesLineChart from "../components/charts/SalesLineChart";
-import UploadExcel from "../components/UploadExcel";
 import { useData } from "../context/DataContext";
 
 import SalesByDistrictBar from "../components/charts/SalesByDistrictBar";
@@ -29,9 +28,6 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 space-y-8">
-      {/* SUBIR EXCEL */}
-      <UploadExcel />
-
       <Header />
 
       {/* KPIs */}

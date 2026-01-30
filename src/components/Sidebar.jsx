@@ -2,7 +2,7 @@ import { useData } from "../context/DataContext";
 import BrandLogo from "./BrandLogo";
 
 export default function Sidebar() {
-  const { rawData, filters, setFilters } = useData();
+  const { rawData, filters, setFilters, resetFilters } = useData();
 
   const servicios = ["Todos", ...new Set(rawData.map(r => r["Servicio"]).filter(Boolean))];
   const distritos = ["Todos", ...new Set(rawData.map(r => r["Distrito"]).filter(Boolean))];
@@ -78,15 +78,7 @@ export default function Sidebar() {
 
       {/* Botón */}
       <button
-        onClick={() =>
-          setFilters({
-            ...filters,
-            servicio: "Todos",
-            fechaInicio: null,
-            fechaFin: null,
-            distrito: "Todos",
-          })
-        }
+        onClick={resetFilters}
         className="mt-6 h-10 rounded-lg text-sm font-medium
           bg-white/15 hover:bg-white/20 border border-white/10"
       >
