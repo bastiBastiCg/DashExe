@@ -1,49 +1,80 @@
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
   ResponsiveContainer,
-  CartesianGrid,
+  Tooltip,
 } from "recharts";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
+
+const COLORS = [
+  "#1E3A8A",
+  "#2563EB",
+  "#0EA5E9",
+  "#22C55E",
+  "#F59E0B",
+  "#EF4444",
+  "#8B5CF6",
+  "#EC4899",
+];
+
+// Label con porcentaje + cantidad
+const renderLabel = ({
+  cx,
+  cy,
+  midAngle,
+  outerRadius,
+  name,
+  percent,
+  value,
+}) => {
+  const RADIAN = Math.PI / 180;
+  const radius = outerRadius + 18;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#111827"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+      fontSize={12}
+      fontWeight={600}
+    >
+      {name} — {(percent * 100).toFixed(1)}% ({value})
+    </text>
+  );
+};
 
 export default function VendorBar({ data = [] }) {
-  const groups = useMemo(() => {
-    return Array.from(
-      new Set(
-        data.map((r) => r["Grupo de comision"]).filter(Boolean)
-      )
-    );
-  }, [data]);
+  const donutData = useMemo(() => {
+    if (!data || data.length === 0) return [];
 
-  const [activeGroup, setActiveGroup] = useState(null);
-
-  useEffect(() => {
-    if (groups.length && !activeGroup) setActiveGroup(groups[0]);
-    if (groups.length && activeGroup && !groups.includes(activeGroup)) setActiveGroup(groups[0]);
-  }, [groups, activeGroup]);
-
-  const chartData = useMemo(() => {
-    if (!activeGroup) return [];
-
-    const counter = {};
+    const conteo = {};
     data.forEach((row) => {
-      if (row["Grupo de comision"] !== activeGroup) return;
-      const vendedor = row["Vendedor"];
-      if (!vendedor) return;
-      counter[vendedor] = (counter[vendedor] || 0) + 1;
+      const grupo = row["Grupo de comision"];
+      if (!grupo) return;
+      conteo[grupo] = (conteo[grupo] || 0) + 1;
     });
 
-    // Con reversed para que mayor quede arriba, orden menor->mayor y slice final
-    return Object.entries(counter)
-      .map(([name, ventas]) => ({ name, ventas }))
-      .sort((a, b) => a.ventas - b.ventas)
-      .slice(-20);
-  }, [data, activeGroup]);
+    // Ordena desc y si quieres limita a top N (opcional)
+    return Object.entries(conteo)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value);
+  }, [data]);
 
-  const chartHeight = Math.max(320, chartData.length * 32);
+  if (donutData.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow p-6 border border-black/5">
+        <h3 className="text-sm font-semibold text-primary mb-3">
+          Desempeño Comercial
+        </h3>
+        <p className="text-gray-400 text-sm">No hay datos disponibles</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl shadow p-6 border border-black/5">
@@ -51,50 +82,56 @@ export default function VendorBar({ data = [] }) {
         Desempeño Comercial
       </h3>
 
-      <div className="flex gap-2 flex-wrap mb-4">
-        {groups.map((group) => (
-          <button
-            key={group}
-            onClick={() => setActiveGroup(group)}
-            className={`px-3 py-1 rounded-lg text-sm font-medium transition
-              ${
-                activeGroup === group
-                  ? "bg-blue-600 text-white shadow-sm"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-          >
-            {group}
-          </button>
-        ))}
+      <div style={{ width: "100%", height: 260 }}>
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={donutData}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={65}
+              outerRadius={90}
+              paddingAngle={4}
+              labelLine
+              label={renderLabel}
+            >
+              {donutData.map((_, index) => (
+                <Cell
+                  key={index}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+
+            <Tooltip
+              formatter={(value, name, props) => [
+                `${(props.payload.percent * 100).toFixed(1)}% (${value})`,
+                name,
+              ]}
+            />
+          </PieChart>
+        </ResponsiveContainer>
       </div>
 
-      {chartData.length === 0 ? (
-        <div className="text-gray-400 text-sm">
-          No hay datos para este grupo
-        </div>
-      ) : (
-        <div style={{ width: "100%", height: chartHeight }}>
-          <ResponsiveContainer>
-            <BarChart
-              data={chartData}
-              layout="vertical"
-              margin={{ top: 10, right: 20, left: 40, bottom: 10 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" />
-              <YAxis
-                type="category"
-                dataKey="name"
-                width={190}
-                reversed
-                tick={{ fontWeight: 600, fontSize: 12, fill: "#374151" }}
-              />
-              <Tooltip formatter={(v) => [`${v} ventas`, "Total"]} />
-              <Bar dataKey="ventas" fill="#1E3A8A" radius={[4, 4, 4, 4]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+      {/* Leyenda */}
+      <div className="mt-4 space-y-2">
+        {donutData.map((item, index) => (
+          <div
+            key={item.name}
+            className="flex items-center text-sm font-semibold text-gray-700"
+          >
+            <span
+              className="w-3 h-3 rounded-full mr-2"
+              style={{
+                backgroundColor: COLORS[index % COLORS.length],
+              }}
+            />
+            {item.name}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
